@@ -1,0 +1,1 @@
+pacman --config /etc/pacman.src.conf "$@"

@@ -1,0 +1,41 @@
+# Maintainer: Rexct <rexct1 at gmail dot com>
+pkgname=stmfb-firmware-pdk7105
+_rpmname=stmfb-firmware
+pkgver=1.20
+pkgrel=1
+pkgdesc="Linux Infrared Remote Control Application"
+arch=('sh4')
+url="http://ftp.stlinux.com/pub/stlinux/2.4"
+license=('GPL2')
+groups=()
+depends=()
+optdepends=()
+makedepends=()
+provides=()
+conflicts=()
+backup=()
+options=('!ccache')
+install=
+changelog=
+source=(stlinux24-sh4-$_rpmname-1.20-1.noarch.rpm::ftp://ftp.stlinux.com/pub/stlinux/2.4/updates/RPMS/sh4/stlinux24-sh4-$_rpmname-1.20-1.noarch.rpm
+        stlinux24-sh4-$_rpmname-1.17+1.15-2.noarch.rpm::ftp://ftp.stlinux.com/pub/stlinux/2.4/STLinux/sh4/stlinux24-sh4-$_rpmname-1.17+1.15-2.noarch.rpm
+        )
+noextract=()
+md5sums=('a5b506d279aebba72bb2ac8436e9f8ff'
+         'd0e6d1b0accfe31af0df4da16e0f0626')
+         
+build() {
+cd "${srcdir}"
+rpm2cpio stlinux24-sh4-$pkgname-1.17+1.15-2.noarch.rpm | bsdtar -xf -
+rpm2cpio stlinux24-sh4-$pkgname-1.20-1.noarch.rpm | bsdtar -xf -
+}
+
+package() {
+  cd "${srcdir}"
+  cp -dr --no-preserve=ownership opt/STM/STLinux-2.4/devkit/sh4/target/{etc,sbin} "${pkgdir}"/
+  install -D -m644 opt/STM/STLinux-2.4/devkit/sh4/target/lib/firmware/fdvo0_7105.fw "${pkgdir}"/lib/firmware/fdvo0_7105.fw
+  install -D -m644 opt/STM/STLinux-2.4/devkit/sh4/target/lib/firmware/component_7105_pdk7105.fw "${pkgdir}"/lib/firmware/component_7105_pdk7105.fw
+  
+  ln -s /lib/firmware/fdvo0_7105.fw "${pkgdir}"/lib/firmware/fdvo0.fw
+  ln -s /lib/firmware/component_7105_pdk7105.fw "${pkgdir}"/lib/firmware/component.fw
+}

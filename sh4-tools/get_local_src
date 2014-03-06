@@ -1,0 +1,57 @@
+#!/bin/bash
+# Usage: get_local_src [PKGBUILD]
+# This script get local PKGBUILD source file from local cache
+# vim:syntax=sh et sw=2 ts=2 ai:
+set -u -e
+. ${1:-PKGBUILD}
+. $(dirname $(realpath $0))/env
+
+is_remote=0
+[ $(hostname) != $mirrorhost ] && is_remote=1
+
+go() { echo "$@"; "$@";}
+ln_local() { # <name>
+  local d is_found=0 f
+  for d in ${mirrordirs[@]} ; do
+    f="$HOME/$d/$name"
+    if [ -r $f ] ; then
+      go ln -sf $f .  
+      is_found=1
+      break
+    fi
+  done
+  if [ $is_found = 0 ] ; then
+    echo "Warn: $name not in local cache"
+  fi
+}
+cp_remote() { # <name>
+  local d is_found=0
+  for d in ${mirrordirs[@]} ; do
+    if [ ! -r $d/$name ] ; then
+      echo "scp $scp_opt $mirrorhost:$d/$name"
+      if scp $scp_opt $mirrorhost:$d/$name . ; then
+        is_found=1
+        break
+      fi
+    fi
+  done
+  if [ $is_found = 0 ] ; then
+    echo "Warn: $name not in $mirrorhost: ${mirrordirs[@]}"
+  fi
+}
+
+for f in ${source[@]} ; do
+  case $f in
+  */*)
+    name=$(basename $f)
+    if [ ! -r $name ] ; then
+      echo "try search source filename=$name"
+      if [ $is_remote = 0 ] ; then
+        ln_local $name
+      else
+        cp_remote $name
+      fi
+    fi
+    ;;
+  esac
+done

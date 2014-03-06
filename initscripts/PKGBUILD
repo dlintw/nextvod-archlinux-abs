@@ -1,0 +1,42 @@
+# Maintainer: Daniel YC Lin <dlin.tw at gmail>
+# Contributor: sudokode <sudokode@gmail.com>
+# Contributor: Tom Gundersen <teg@jklm.no>
+# Contributor: Thomas Bächler <thomas@archlinux.org>
+# Contributor: Aaron Griffin <aaron@archlinux.org>
+
+pkgname=initscripts
+pkgver=2011.12.1
+pkgrel=1.1
+pkgdesc="System initialization/bootup scripts"
+arch=('any')
+url="http://www.archlinux.org"
+license=('GPL2')
+source=(http://arm.konnichi.com/2011/12/31/core/os/i686/initscripts-2011.12.1-1-any.pkg.tar.xz
+inittab rc.conf rc.local rc.sysinit rc.shutdown rc.single)
+
+depends=(glibc bash coreutils iproute2 ncurses findutils sysvinit)
+install=$pkgname.install
+makepkgopt=(!upx)
+optdepend=("dhcpcd: DHCP network configuration" 
+"bridge-utils: Legacy network bridging support"
+"net-tools: Legacy network support"
+"wireless_tools: Legacy wireless networking")
+backup=(etc/inittab etc/rc.conf etc/rc.local etc/rc.local.shutdown)
+conflict=(initscripts-systemd)
+build() {
+  for f in inittab rc.conf rc.local rc.sysinit rc.shutdown rc.single ; do
+    cp ${srcdir}/$f ${srcdir}/etc
+  done
+}
+package() {
+  mkdir -p $pkgdir/lib/modules
+  cp -a ${srcdir}/usr  $pkgdir
+  cp -a ${srcdir}/etc  $pkgdir
+}
+md5sums=('32ed7ccbe42a174715426712fee043a6'
+         '3abfaf26bbd835e2d26e767299270fed'
+         '3608a795c16169f5aeaebcba9892e699'
+         '975dfc93f5ffb26017406a8471658fc5'
+         'd214a903b8abc16b1a87015f82436002'
+         '5bec0db9da082273a0bff6630531da1b'
+         'ff882d06223706aad088694270db8123')

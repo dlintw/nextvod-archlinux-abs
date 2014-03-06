@@ -1,0 +1,3 @@
+[ $# -ne 1 ] && echo "Usage:`basename $0` <pkgname>" && exit 1
+cfg=/etc/pacman.src.conf
+pactree --config $cfg -su $1 | xargs -t pacman -Sp --config $cfg

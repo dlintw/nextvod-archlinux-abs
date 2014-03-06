@@ -1,0 +1,18 @@
+# Maintainer: Daniel YC Lin <dlin.tw at gmail>
+# toolchain build order: linux-api-headers->glibc->binutils->gcc->binutils->glibc
+# shpkg -S stlinux23-sh4-linux-kernel-headers
+
+pkgname=linux-api-headers
+pkgver=2.6.23.17
+pkgrel=1
+pkgdesc="Kernel headers sanitized for use in userspace(from stlinux)"
+arch=(sh4)
+provides=linux
+url="http://www.stlinux.com"
+license=('GPL2')
+source=(http://ftp.stlinux.com/pub/stlinux/2.3/updates/RPMS/sh4/stlinux23-sh4-linux-kernel-headers-${pkgver}_stm23_0125-41.noarch.rpm)
+
+package() {
+  cp -r opt/STM/STLinux-2.3/devkit/sh4/target/usr $pkgdir
+}
+md5sums=('2c9faa99291d7c1b993b14c3e46319a6')

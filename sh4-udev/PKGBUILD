@@ -1,0 +1,38 @@
+# Maintainer: Daniel YC Lin <dlin.tw at gmail>
+pkgname=sh4-udev
+pkgver=162
+pkgrel=35.1
+_srcrev=35
+pkgdesc="The userspace dev tools (udev) in STLinux"
+arch=(sh4)
+url="http://www.stlinux.com"
+license=('GPL')
+groups=('base')
+depends=('glib2' 'hwids' 'kbd' 'kmod' 'util-linux')
+provides=("udev=${pkgver}" "systemd=${pkgver}"
+		  "libsystemd=${pkgver}" "systemd-tools=${pkgver}")
+conflicts=('systemd', 'libsystemd' 'systemd-tools')
+backup=('etc/udev/udev.conf')
+options=(!makeflags !libtool)
+source=(
+http://ftp.stlinux.com/pub/stlinux/2.4/updates/RPMS/sh4/stlinux24-sh4-udev-$pkgver-${_srcrev}.sh4.rpm
+http://ftp.stlinux.com/pub/stlinux/2.4/updates/RPMS/sh4/stlinux24-sh4-udev-dev-$pkgver-${_srcrev}.sh4.rpm
+)
+
+package() {
+  cp -r opt/STM/STLinux-2.4/devkit/sh4/target/* $pkgdir
+
+  # for Arch's /lib->/usr/lib /sbin,/usr/sbin->/usr/bin
+  mkdir -p $pkgdir/usr/lib
+  mv -i $pkgdir/lib/* $pkgdir/usr/lib
+  rmdir $pkgdir/lib
+  mkdir -p $pkgdir/usr/bin
+  mv -i $pkgdir/sbin/* $pkgdir/usr/bin
+  rmdir $pkgdir/sbin
+  rm $pkgdir/usr/sbin/udevd
+  mv -i $pkgdir/usr/sbin/* $pkgdir/usr/bin
+  rmdir $pkgdir/usr/sbin
+}
+
+md5sums=('3d28153672bae390d6ad3d121a13a9c5'
+         '42e2b97a4ac15f2ae55240fc561ff9fb')

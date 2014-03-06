@@ -1,0 +1,28 @@
+# Maintainer: Daniel YC Lin <dlin.tw at gmail>
+pkgbase=glib2
+pkgname=sh4-glib2
+pkgver=2.34.1
+pkgrel=37.1
+pkgdesc="Common C routines used by GTK+ and other libs"
+url="http://www.gtk.org/"
+arch=(sh4)
+makedepends=('pkg-config' 'python2' 'libxslt' 'docbook-xml' 'pcre' 'libffi' 'elfutils')
+source=(
+http://ftp.stlinux.com/pub/stlinux/2.4/updates/RPMS/sh4/stlinux24-sh4-glib2-$pkgver-37.sh4.rpm
+http://ftp.stlinux.com/pub/stlinux/2.4/updates/RPMS/sh4/stlinux24-sh4-glib2-dev-$pkgver-37.sh4.rpm
+)
+groups=('base')
+provides=("glib2=$pkgver")
+conflicts=('glib2')
+depends=('pcre' 'libffi')
+optdepends=('python2: for gdbus-codegen and gtester-report'
+      'elfutils: gresource inspection tool')
+options=('!docs' '!emptydirs')
+license=('LGPL')
+url="http://gcc.gnu.org"
+package() {
+  cp -r opt/STM/STLinux-2.4/devkit/sh4/target/* $pkgdir
+}
+
+md5sums=('3697c6ecfce9733f6e95a94dd9c5b981'
+         '7f8fcf8fa78fbebf22b7225e440ae471')

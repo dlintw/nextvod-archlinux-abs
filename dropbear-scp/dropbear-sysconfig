@@ -1,0 +1,2 @@
+# see more options by dropbear --help
+OPTIONS="-p 22"

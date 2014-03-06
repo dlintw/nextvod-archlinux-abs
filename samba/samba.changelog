@@ -1,0 +1,4 @@
+samba for SH4TWBOX
+==========================================
+2013-07-23
+1.modify backup file list to portect setting file :/etc/smb.conf

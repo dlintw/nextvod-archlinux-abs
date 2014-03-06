@@ -1,0 +1,7 @@
+NAME="Arch Linux(sh4twbox)"
+ID=arch
+PRETTY_NAME="Arch Linux(sh4twbox)"
+ANSI_COLOR="0;36"
+HOME_URL="http://sh4twbox.googlecode.com"
+SUPPORT_URL="http://sh4twbox.googlecode.com"
+BUG_REPORT_URL="https://code.google.com/p/sh4twbox/issues"

@@ -1,0 +1,10 @@
+# script for generate base.makelist and base-devel.makelist
+
+yaourt2 -Sy
+pacman2 -Sg base | awk '{print $2}' > base.makelist
+pacman2 -Sg base-devel | awk '{print $2}' > base-devel.makelist
+for p in jfsutils pcmciautils xfsprogs ; do
+  sed -e "s/^$p\$//" -i base.makelist
+done
+
+ls -l base.makelist base-devel.makelist

@@ -1,0 +1,8 @@
+begin
+  button = KEY_POWER
+  prog   = irexec
+  repeat = 0
+  config = sync;reboot
+  flags  = quit
+end
+            

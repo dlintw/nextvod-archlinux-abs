@@ -1,0 +1,32 @@
+# Maintainer: Rexct <rexct1 at gmail dot com>
+pkgname=lirc-apps-dev
+pkgver=0.8.2
+pkgrel=1
+_rpmrel=16
+pkgdesc="Linux Infrared Remote Control Application Development"
+arch=('sh4')
+url="http://www.lirc.org/"
+license=('GPL2')
+groups=(lirc)
+depends=()
+optdepends=()
+makedepends=()
+provides=()
+conflicts=()
+backup=()
+options=('!ccache')
+install=
+changelog=
+source=(stlinux23-sh4-$pkgname-$pkgver-$_rpmrel.sh4.rpm::http://ftp.stlinux.com/pub/stlinux/2.3/STLinux/sh4/stlinux23-sh4-${pkgname}-${pkgver}-${_rpmrel}.sh4.rpm    )
+noextract=()
+md5sums=('ea9ad1d2a60821389cf859fcc38f981f')
+
+build() {
+cd "${srcdir}"
+rpmextract stlinux23-sh4-$pkgname-$pkgver-$pkgrel.sh4.rpm | bsdtar -xf -
+}
+
+package() {
+  cd "${srcdir}"
+  cp -dr --no-preserve=ownership opt/STM/STLinux-2.3/devkit/sh4/target/usr "${pkgdir}"/
+}

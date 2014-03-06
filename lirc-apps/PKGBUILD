@@ -1,0 +1,61 @@
+# Maintainer: Rexct <rexct1 at gmail dot com>
+pkgname=lirc-apps
+pkgver=0.8.2
+pkgrel=1
+_rpmrel=16
+pkgdesc="Linux Infrared Remote Control Application"
+arch=('sh4')
+url="http://www.lirc.org/"
+license=('GPL2')
+groups=(lirc)
+depends=()
+optdepends=()
+makedepends=()
+provides=()
+conflicts=()
+backup=('etc/lircd.conf'
+        'etc/lircrc')
+options=('!ccache')
+install=
+changelog=ChangeLog
+source=(stlinux23-sh4-$pkgname-$pkgver-$_rpmrel.sh4.rpm::http://ftp.stlinux.com/pub/stlinux/2.3/STLinux/sh4/stlinux23-sh4-${pkgname}-${pkgver}-${_rpmrel}.sh4.rpm 
+        lircd.conf
+        lircrc
+        ANNOUNCE
+        AUTHORS
+        COPYING
+        NEWS
+        README
+        TODO
+        )
+noextract=()
+md5sums=('c2731525206c8208e0109900303cc3db'
+         'c6a6babd0c9137b6370e5b628245ba4f'
+         'a5022e2fea9401f15cdcb80d3c41237f'
+         'ba625ec7ae76c2d0e141d220c1ce4bc5'
+         '1f83e833bd326c2b90942f7e4083ef27'
+         '0636e73ff0215e8d672dc4c32c317bb3'
+         '76edfcf8c4b47075d8c313c028dddc58'
+         'ea60ea8aa2ae58752a542a7b009b6d84'
+         'e599c236b21393e6dbbff3f302a8fae3')
+         
+build() {
+cd "${srcdir}"
+rpm2cpio stlinux23-sh4-$pkgname-$pkgver-$_rpmrel.sh4.rpm | bsdtar -xf -
+
+}
+
+package() {
+  cd "${srcdir}"
+  cp -dr --no-preserve=ownership opt/STM/STLinux-2.3/devkit/sh4/target/{etc,usr} "${pkgdir}"/
+  rm "${pkgdir}"/etc/lircd.conf
+  cp --no-preserve=ownership lircd.conf "${pkgdir}"/etc/lircd.conf
+  cp --no-preserve=ownership lircrc "${pkgdir}"/etc/lircrc
+  install -D -m644 COPYING "${pkgdir}"/usr/share/licenses/$pkgname/COPYING
+  install -D -m644 ANNOUNCE "${pkgdir}"/usr/share/doc/$pkgname/ANNOUNCE
+  install -D -m644 AUTHORS "${pkgdir}"/usr/share/doc/$pkgname/AUTHORS
+  install -D -m644 NEWS "${pkgdir}"/usr/share/doc/$pkgname/NEWS
+  install -D -m644 README "${pkgdir}"/usr/share/doc/$pkgname/README
+  install -D -m644 TODO "${pkgdir}"/usr/share/doc/$pkgname/TODO
+  
+}

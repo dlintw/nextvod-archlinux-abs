@@ -1,0 +1,33 @@
+--- src/security.c.orig	2013-02-20 16:32:44.000000000 +0800
++++ src/security.c	2013-02-20 16:34:17.000000000 +0800
+@@ -20,12 +20,14 @@
+ /*
+  * XXX for special case checks in check_callit.
+  */
++/* mark off for glibc 2.6.1
+ #include <rpcsvc/mount.h>
+ #include <rpcsvc/rquota.h>
+ #include <rpcsvc/nfs_prot.h>
+ #include <rpcsvc/yp.h>
+ #include <rpcsvc/ypclnt.h>
+ #include <rpcsvc/yppasswd.h>
++*/
+ 
+ #include "rpcbind.h"
+ 
+@@ -317,6 +319,7 @@
+ 		if (!insecure)
+ 			goto deny;
+ 		break;
++#if 0
+ 	case MOUNTPROG:
+ 		if (args->rmt_proc != MOUNTPROC_MNT &&
+ 		    args->rmt_proc != MOUNTPROC_UMNT)
+@@ -340,6 +343,7 @@
+ 		default:
+ 			break;
+ 		}
++#endif
+ 	default:
+ 		break;
+ 	}

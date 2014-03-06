@@ -1,0 +1,46 @@
+# Maintainer: Rexct <rexct1 at gmail dot com>
+pkgname=apache24
+pkgver=2.4.4
+pkgrel=1
+pkgdesc="A high performance Unix-based HTTP server"
+arch=('sh4')
+url="http://apr.apache.org/dist/httpd"
+license=('APACHE')
+backup=(etc/httpd/httpd.conf
+        etc/httpd/extra/httpd-{autoindex,dav,default,info,languages}.conf
+        etc/httpd/extra/httpd-{manual,mpm,multilang-errordoc}.conf
+        etc/httpd/extra/httpd-{ssl,userdir,vhosts}.conf)
+groups=()
+depends=('openssl' 'zlib' 'apr-util' 'pcre' )
+optdepends=('lynx: apachectl status')
+makedepends=('gcc')
+provides=('apache')
+conflicts=('apache')
+options=()
+install=
+changelog=CHANGES
+source=(httpd-$pkgver.tar.gz::http://mirror.csclub.uwaterloo.ca/apache/httpd/httpd-${pkgver}.tar.gz )
+noextract=()
+md5sums=('a2fed766e67c9681e0d9b86768f08286')
+
+build() {
+  cd "${srcdir}/httpd-${pkgver}"
+  ./configure --prefix=/usr/local/apache --sysconfdir=/etc/httpd --enable-so --enable-ssl --enable-cgi --enable-rewrite --with-zlib --with-pcre --with-apr=/usr/local/apr --with-apr-util=/usr/local/apr-util --enable-mpms-shared=all --with-mpm=event 
+}
+
+check() {
+  cd "${srcdir}/httpd-${pkgver}"
+  make -j1 check
+}
+
+package() {
+  cd "${srcdir}/httpd-${pkgver}"
+  make DESTDIR="${pkgdir}" install
+  install -D -m644 LICENSE "${pkgdir}"/usr/share/licenses/$pkgname/LICENSE
+  install -D -m644 ABOUT_APACHE "${pkgdir}"/usr/share/doc/$pkgname/ABOUT_APACHE
+  install -D -m644 NOTICE "${pkgdir}"/usr/share/doc/$pkgname/NOTICE
+  install -D -m644 README "${pkgdir}"/usr/share/doc/$pkgname/README
+  install -D -m644 README.platforms "${pkgdir}"/usr/share/doc/$pkgname/README.platforms
+  install -D -m644 ROADMAP "${pkgdir}"/usr/share/doc/$pkgname/ROADMAP
+  install -D -m644 VERSIONING "${pkgdir}"/usr/share/doc/$pkgname/VERSIONING
+}

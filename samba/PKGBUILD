@@ -1,0 +1,31 @@
+# Maintainer: Rexct <rexct1 at gmail dot com>
+pkgname=samba
+pkgver=3.5.8
+pkgrel=1
+pkgdesc="Tools to access a server's filespace and printers via SMB"
+arch=('sh4')
+url="http://www.samba.org/"
+license=('GPL3')
+groups=()
+depends=('popt' 'libldap>=2.4.18-1')
+optdepends=('tdb' 'libcups' 'fam')
+provides=('samba' 'smbclient')
+conflicts=('samba' 'smbclient')
+backup=('etc/smb.conf')
+options=('!ccache')
+install=
+changelog=$pkgname.changelog
+source=($pkgname-$pkgver.sh4.tgz::https://sh4twbox.googlecode.com/files/samba-3.5.8.sh4.tgz )
+noextract=()
+md5sums=('14a8dad001d8fd3b0d07c9ed0b860b3d')
+
+build() {
+cd "${srcdir}"
+}
+
+package() {
+  cd "${srcdir}"
+  cp -dr --no-preserve=ownership {etc,sbin,usr,var} "${pkgdir}"/
+  rm "${pkgdir}"/etc/ld.so.conf
+  rm "${pkgdir}"/sbin/ldconfig
+}

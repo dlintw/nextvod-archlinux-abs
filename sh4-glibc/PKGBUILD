@@ -1,0 +1,71 @@
+# Maintainer: Daniel YC Lin <dlin.tw at gmail>
+pkgname=sh4-glibc
+pkgver=2.14.1
+pkgrel=44.1
+_stver=2.14.1-44
+pkgdesc="STLinux GNU C Library"
+arch=(sh4)
+license=('GPL' 'LGPL')
+groups=('base')
+provides=("glibc=$pkgver")
+conflicts=('glibc')
+depends=('linux-api-headers' 'tzdata' 'filesystem')
+makedepends=('gcc')
+backup=(etc/locale.gen
+        etc/nscd.conf)
+options=('!strip' 'staticlibs')
+install=glibc.install
+url="http://gcc.gnu.org"
+source=(
+http://ftp.stlinux.com/pub/stlinux/2.4/updates/RPMS/sh4/stlinux24-sh4-glibc-$_stver.sh4.rpm
+http://ftp.stlinux.com/pub/stlinux/2.4/updates/RPMS/sh4/stlinux24-sh4-glibc-debuginfo-$_stver.sh4.rpm
+http://ftp.stlinux.com/pub/stlinux/2.4/updates/RPMS/sh4/stlinux24-sh4-glibc-dev-$_stver.sh4.rpm
+http://ftp.stlinux.com/pub/stlinux/2.4/updates/RPMS/sh4/stlinux24-sh4-glibc-i18ndata-$_stver.sh4.rpm
+http://ftp.stlinux.com/pub/stlinux/2.4/updates/RPMS/sh4/stlinux24-sh4-glibc-locales-$_stver.sh4.rpm
+http://ftp.stlinux.com/pub/stlinux/2.4/updates/RPMS/sh4/stlinux24-sh4-glibc-nscd-$_stver.sh4.rpm
+nscd.service
+nscd.tmpfiles
+locale.gen.txt
+locale-gen
+)
+
+package() {
+  cp -r opt/STM/STLinux-2.4/devkit/sh4/target/* $pkgdir
+  # for Arch's /lib -> /usr/lib, /sbin,/usr/sbin -> /usr/bin
+  mkdir -p $pkgdir/usr/lib $pkgdir/usr/bin
+  mv -i $pkgdir/lib/* $pkgdir/usr/lib
+  rmdir $pkgdir/lib
+  mv -i $pkgdir/sbin/* $pkgdir/usr/bin
+  rmdir $pkgdir/sbin
+  mv -i $pkgdir/usr/sbin/* $pkgdir/usr/bin
+  rmdir $pkgdir/usr/sbin
+
+  rm -f ${pkgdir}/etc/ld.so.{cache,conf}
+  install -dm755 ${pkgdir}/usr/lib/{locale,systemd/system,tmpfiles.d}
+  install -m644 ${srcdir}/nscd.service ${pkgdir}/usr/lib/systemd/system
+  install -m644 ${srcdir}/nscd.tmpfiles ${pkgdir}/usr/lib/tmpfiles.d/nscd.conf
+  rm -fr $pkgdir/usr/share/zoneinfo # in pkg tzdata
+#  rm -f $pkgdir/etc/ld.so.conf}  # in pkg filesystem
+  rm -f $pkgdir/etc/{host.conf,nsswitch.conf}  # already in filesystem
+  #rm -f $pkgdir/usr/include/scsi/scsi.h # already in sh4-linux-api-headers
+
+  install -m755 ${srcdir}/locale-gen ${pkgdir}/usr/bin
+
+  # temporary symlink
+#  ln -s ../../sbin/ldconfig ${pkgdir}/usr/bin/ldconfig
+
+  # create /etc/locale.gen
+  install -m644 ${srcdir}/locale.gen.txt ${pkgdir}/etc/locale.gen
+
+}
+
+md5sums=('75ab3c40f31cdaf68bdf1b276a84a50d'
+         'ef987557e2d6fd82ef3d0deb0b0e4d03'
+         '7f9dba21c85472f88bc7fcd99bb4641c'
+         'c030d4789847ae5a5f9f215b8d1d8c54'
+         'd33a3845342c46e767526f1fad27bc38'
+         'e6f1937be4034d6aa4a11433e9bd6667'
+         'd5fab2cd3abea65aa5ae696ea4a47d6b'
+         'da662ca76e7c8d7efbc7986ab7acea2d'
+         '97bd317d02ed9993b9cf8d47a4258fab'
+         'b5fd017036fb91199ee76f670da8c15b')

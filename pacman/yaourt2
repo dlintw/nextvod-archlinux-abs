@@ -1,0 +1,1 @@
+yaourt --config /etc/pacman.src.conf "$@"

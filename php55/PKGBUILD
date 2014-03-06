@@ -1,0 +1,76 @@
+# Maintainer: Rexct <rexct1 at gmail dot com>
+pkgname=php55
+_pkgbase=php
+pkgver=5.5.1
+pkgrel=1
+pkgdesc="An HTML-embedded scripting language"
+arch=('sh4')
+url="http://www.php.net"
+license=('PHP')
+backup=('usr/local/php/php.ini')
+groups=()
+depends=('libxml2' 'libmcrypt' 'libjpeg-turbo' 'libpng')
+optdepends=('mysql-devel')
+makedepends=( 'autoconf>=2.59' 'libtool>=1.4' 'bison' 
+             'apache' 'xz' 'libpng' 'libjpeg-turbo' 
+             'openssl' 'curl' 'openssl' 'db' )
+provides=()
+conflicts=('php')
+options=()
+changelog=
+source=($_pkgbase-$pkgver.tar.xz::http://tw1.php.net/distributions/${_pkgbase}-${pkgver}.tar.xz 
+        filters.patch
+        httpd.conf)
+noextract=()
+md5sums=('365403c216d22255c3aa57fe54944f8e'
+         'bb589d945c60e962c84a7ae3a1fecae8'
+         '3310173808a5f55297b0605e133ec441')
+
+build() {
+  patch -Np1 -i "${srcdir}/filters.patch"
+  cd "${srcdir}/${_pkgbase}-${pkgver}"
+  ./configure --prefix=/usr --with-config-file-path=/etc/php \
+  --sbindir=/usr/bin --sysconfdir=/etc/php --localstatedir=/var\
+  --with-layout=GNU --with-config-file-scan-dir=/etc/php/conf.d \
+  --mandir=/usr/share/man \
+  --with-apxs2=/usr/sbin/apxs --with-zlib-dir=/usr/lib \
+  --with-mcrypt=/usr/lib --with-libxml-dir=/usr/lib \
+  --with-mysql=shared --with-mysqli=/usr/bin/mysql_config \
+  --with-mysql-sock=/tmp/mysql.sock \
+  --with-jpeg-dir=/usr --with-png-dir=/usr \
+  --with-gd --with-iconv  \
+  --with-zlib --enable-xml \
+  --enable-bcmath --enable-shmop \
+  --enable-sysvsem --enable-inline-optimization  \
+  --enable-mbregex \
+  --enable-mbstring --enable-ftp --enable-gd-native-ttf --with-openssl \
+  --enable-pcntl --enable-sockets --with-xmlrpc --enable-zip --enable-soap \
+  --without-pear --with-gettext \
+  --enable-session --with-mcrypt 
+  #--with-mysql-dir=/usr/include/mysql/mysql.h --with-jpeg --with-png --with-xpm
+  #--with-freetype --with-libxml --enable-discard-path
+  #--enable-magic-quotes --enable-safe-mode --with-curlwrappers
+  #--enable-fastcgi --enable-force-cgi-redirect --with-mime-magic, --enable-suhosin
+}
+
+check() {
+  cd "${srcdir}/${_pkgbase}-${pkgver}"
+  make -j1 check
+}
+
+package() {
+  cd "${srcdir}/${_pkgbase}-${pkgver}"
+  
+  mkdir -p "${pkgdir}"/etc/httpd
+  #cp --no-preserve=ownership "${srcdir}"/httpd.conf "${pkgdir}"/etc/httpd/conf/httpd.conf
+  install -Dm644 "${srcdir}"/httpd.conf "${pkgdir}"/etc/httpd/conf/httpd.conf
+  ln -fs "${srcdir}/${_pkgbase}-${pkgver}"/ext/phar/phar.php "${srcdir}/${_pkgbase}-${pkgver}"/ext/phar/phar.phar
+  
+  make INSTALL_ROOT="${pkgdir}" install
+  
+  mkdir -p "${pkgdir}"/etc/php
+  if [[ ! -f $pkgdir'/usr/local/php/php.ini' ]];then
+    cp --no-preserve=ownership "${srcdir}"/"${_pkgbase}"-"${pkgver}"/php.ini-production  "${pkgdir}"/etc/php/php.ini
+  fi
+  mv "${pkgdir}"/etc/httpd/conf/httpd.conf "${pkgdir}"/etc/httpd/conf/httpd.conf.php.default
+}

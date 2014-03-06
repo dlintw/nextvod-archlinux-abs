@@ -1,0 +1,63 @@
+# $Id: PKGBUILD 194463 2013-09-16 16:36:20Z tomegun $
+# Maintainer : Tom Gundersen <teg@jklm.no>
+# Maintainer : Ionut Biru <ibiru@archlinux.org>
+
+pkgbase=transmission
+pkgname=('transmission-cli' 'transmission-cli-zh_tw')
+pkgver=2.82
+pkgrel=1.1
+arch=('i686' 'x86_64' sh4)
+url="http://www.transmissionbt.com/"
+license=('MIT')
+#makedepends=('gtk3' 'intltool' 'curl' 'qt5-base' 'libevent')
+makedepends=('curl' 'libevent')
+source=(http://mirrors.m0k.org/transmission/files/$pkgbase-$pkgver.tar.xz
+https://sh4twbox.googlecode.com/files/transmission-cli-zh_TW-2.82-1.txz)
+md5sums=('a5ef870c0410b12d10449c2d36fa4661'
+         'a9b5e9cbec430ff46978c85813c892e1')
+
+build() {
+  cd $pkgbase-$pkgver
+
+  ./configure --prefix=/usr
+  make
+  #pushd qt
+  #qmake qtr.pro
+  #make
+}
+package_transmission-cli() {
+  pkgdesc="Fast, easy, and free BitTorrent client (CLI tools, daemon and web client)"
+  depends=('curl' 'libevent')
+  conflict=('transmission-cli-zh_tw')
+  install=transmission-cli.install
+
+  cd $pkgbase-$pkgver
+
+  for dir in daemon cli web utils
+  do
+      make -C "$dir" DESTDIR="$pkgdir" install
+  done
+
+  install -D -m644 "$srcdir/transmission-$pkgver/daemon/transmission-daemon.service" "$pkgdir/usr/lib/systemd/system/transmission.service"
+  install -D -m644 COPYING "$pkgdir/usr/share/licenses/transmission-cli/COPYING"
+}
+
+package_transmission-cli-zh_tw() {
+  pkgdesc="Fast, easy, and free BitTorrent client (CLI tools, daemon and web client) zh_TW interface"
+  depends=('curl' 'libevent')
+  conflict=('transmission-cli')
+  provides=('transmission-cli')
+  install=transmission-cli.install
+
+  cd $pkgbase-$pkgver
+
+  for dir in daemon cli web utils
+  do
+      make -C "$dir" DESTDIR="$pkgdir" install
+  done
+
+  install -D -m644 "$srcdir/transmission-$pkgver/daemon/transmission-daemon.service" "$pkgdir/usr/lib/systemd/system/transmission.service"
+  install -D -m644 COPYING "$pkgdir/usr/share/licenses/transmission-cli/COPYING"
+
+  cp -r $srcdir/usr $pkgdir
+}

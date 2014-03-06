@@ -1,0 +1,57 @@
+# Maintainer:  Bartlomiej Piotrowski <nospam@bpiotrowski.pl>
+# Contributor: Jaroslav Lichtblau <dragonlord@aur.archlinux.org>
+# Contributor: Jason Pierce <`echo 'moc tod liamg ta nosaj tod ecreip' | rev`>
+# Contributor: Jeremy Cowgar <jeremy@cowgar.com>
+
+pkgname=dropbear-scp
+_pkgname=dropbear
+pkgver=2012.55
+pkgrel=1
+pkgdesc="Lightweight replacement for sshd (with scp+sshfs support)"
+arch=(sh4)
+url="http://matt.ucc.asn.au/dropbear/dropbear.html"
+license=('MIT')
+depends=('zlib')
+backup=(etc/sysconfig/dropbear)
+provide=('dropbear')
+conflict=('dropbear')
+source=(http://matt.ucc.asn.au/$_pkgname/releases/$_pkgname-$pkgver.tar.bz2
+        $_pkgname-init.d $_pkgname-sysconfig scp sftp-server)
+
+build() {
+  cd ${srcdir}/${_pkgname}-$pkgver
+
+  sed -i 's|usr/libexec/sftp|usr/lib/ssh/sftp|' options.h
+
+  ./configure --prefix=/usr
+  LIBS="-lcrypt" make
+}
+
+package() {
+  cd ${srcdir}/${_pkgname}-$pkgver
+
+  make prefix=${pkgdir}/usr install
+
+ #man pages
+  install -D -m644 dbclient.1 ${pkgdir}/usr/share/man/man1/dbclient.1
+  install -D -m644 $_pkgname.8 ${pkgdir}/usr/share/man/man8/$_pkgname.8
+  install -D -m644 dropbearkey.8 ${pkgdir}/usr/share/man/man8/dropbearkey.8
+
+ #configuration files
+  install -d ${pkgdir}/etc/$_pkgname
+  install -d ${pkgdir}/var/lock/subsys
+  install -D -m755 ${srcdir}/${_pkgname}-init.d ${pkgdir}/etc/init.d/$_pkgname
+  install -D -m644 ${srcdir}/${_pkgname}-sysconfig ${pkgdir}/etc/sysconfig/$_pkgname
+  
+ #install binary files
+  install -D -m755 ${srcdir}/scp ${pkgdir}/usr/bin/scp
+  install -D -m755 ${srcdir}/sftp-server ${pkgdir}/usr/libexec/sftp-server
+  
+ #license file
+  install -D -m644 LICENSE ${pkgdir}/usr/share/licenses/$pkgname/LICENSE
+}
+md5sums=('8c784baec3054cdb1bb4bfa792c87812'
+         'e0c663d41acc7ee1d645d42adb3e045a'
+         'e3170aab7f9eb9f99dcf7ace08e506bc'
+         '79eab75391b0d8f5b9f864ead5c07af1'
+         '91d291da68c3c89e40fffe868548ad3e')

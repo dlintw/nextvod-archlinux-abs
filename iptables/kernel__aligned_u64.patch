@@ -1,0 +1,19 @@
+--- iptables-1.4.19.1/include/linux/netfilter/xt_connbytes.h.old	2013-08-14 11:11:04.625359440 +0800
++++ iptables-1.4.19.1/include/linux/netfilter/xt_connbytes.h	2013-08-14 11:37:18.140551458 +0800
+@@ -1,5 +1,6 @@
+ #ifndef _XT_CONNBYTES_H
+ #define _XT_CONNBYTES_H
++#define __aligned_u64 __u64 __attribute__((aligned(8)))
+ 
+ #include <linux/types.h>
+ 
+--- iptables-1.4.19.1/include/linux/netfilter/xt_quota.h.old	2013-08-14 11:47:14.626886759 +0800
++++ iptables-1.4.19.1/include/linux/netfilter/xt_quota.h	2013-08-14 11:49:32.893064319 +0800
+@@ -1,6 +1,6 @@
+ #ifndef _XT_QUOTA_H
+ #define _XT_QUOTA_H
+-
++#define __aligned_u64 __u64 __attribute__((aligned(8)))
+ #include <linux/types.h>
+ 
+ enum xt_quota_flags {

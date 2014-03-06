@@ -1,0 +1,48 @@
+# $Id: PKGBUILD 93409 2013-07-03 10:50:24Z spupykin $
+# Maintainer: Sergej Pupykin <pupykin.s+arch@gmail.com>
+# Contributor: Jens Pranaitis <jens@jenux.homelinux.org>
+
+pkgbase=busybox
+pkgname=busybox-init
+pkgver=1.21.1
+pkgrel=1
+pkgdesc="Utilities for rescue and embedded systems provides sysvinit"
+arch=("i686" "x86_64" sh4)
+url="http://www.busybox.net"
+license=('GPL')
+makedepends=("make" "gcc" "sed" "ncurses")
+source=($url/downloads/$pkgbase-$pkgver.tar.bz2
+	config)
+install=busybox.install
+md5sums=('795394f83903b5eec6567d51eebb417e'
+         '3fbd88dc6327ff0455c17409efdbab79')
+
+build() {
+  cd "$srcdir/$pkgbase-$pkgver"
+  cp $srcdir/config .config
+  sed '1,1i#include <sys/resource.h>' -i include/libbb.h
+  # if you want to run menuconfig uncomment the following line:
+  make menuconfig
+  make
+}
+
+package() {
+  cd "$srcdir/$pkgbase-$pkgver"
+  install -Dm755 busybox $pkgdir/usr/bin/busybox
+  cd $pkgdir
+  #ln -s usr/bin/busybox init
+  ln -s usr/bin/busybox linuxrc
+  mkdir -p etc/init.d usr/share/udhcpc var/spool/cron/crontabs
+  for f in inittab mdev.conf sysctl.conf ; do
+    cp $srcdir/$f etc
+  done
+  ln -sf /usr/share/zoneinfo/Asia/Taipei etc/localtime
+  for f in backupip bridge.sample crond ftpd.sample nscd ntpd rcS \
+      staticip.sample syslogd telnetd udhcpc cpufreq ; do
+    cp $srcdir/$f etc/init.d
+  done
+  cd usr/bin
+  for f in ifconfig init mdev ntpd route syslogd poweroff halt reboot ; do
+    ln -s busybox $f
+  done
+}

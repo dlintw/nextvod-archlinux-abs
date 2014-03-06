@@ -1,0 +1,42 @@
+# Maintainer: Gaetan Bisson <bisson@archlinux.org>
+# Contributor:  Daenyth <Daenyth [at] gmail [dot] com>
+# Contributor: Jeff Mickey <jeff@archlinux.org>
+# Contributor: sh__
+
+pkgname=rtorrent
+pkgver=0.9.2
+pkgrel=2
+pkgdesc='Ncurses BitTorrent client based on libTorrent'
+url='http://libtorrent.rakshasa.no/'
+license=('GPL')
+arch=('i686' 'x86_64' 'sh4')
+depends=('libtorrent=0.13.2' 'curl' 'xmlrpc-c')
+source=("http://libtorrent.rakshasa.no/downloads/${pkgname}-${pkgver}.tar.gz"
+xmlrpc-c.patch
+)
+
+build() {
+	cd "${srcdir}/${pkgname}-${pkgver}"
+
+        patch -RNp0 -i ${srcdir}/xmlrpc-c.patch
+
+	export CXXFLAGS="${CXXFLAGS} -fno-strict-aliasing"
+        #export PKG_CONFIG_PATH=/usr/lib/pkgconfig:/usr/include/xmlrpc-c
+	./configure \
+		--prefix=/usr \
+		--disable-debug \
+		--with-xmlrpc-c \
+
+	make
+}
+
+package() {
+	cd "${srcdir}/${pkgname}-${pkgver}"
+	make DESTDIR="${pkgdir}" install
+
+	install -D doc/faq.xml "${pkgdir}"/usr/share/doc/rtorrent/faq.xml
+	install -D doc/rtorrent.1 "${pkgdir}"/usr/share/man/man1/rtorrent.1
+	install -D doc/rtorrent.rc "${pkgdir}"/usr/share/doc/rtorrent/rtorrent.rc
+}
+sha1sums=('2a642d722745091265037ed8929a23c237a3b99f'
+          '969b45c32c1b77d96222219248d59469fcaa9d0d')

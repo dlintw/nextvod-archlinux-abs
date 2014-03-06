@@ -1,0 +1,57 @@
+# Maintainer: Daniel YC Lin <dlin.tw at gmail>
+
+pkgname=(sh4-gcc sh4-gcc-libs)
+pkgver=4.8.2
+pkgrel=131.1
+_stver=4.8.2-131
+pkgdesc="The GNU Compiler Collection (STLinux 2.4)"
+arch=(sh4)
+license=('GPL' 'LGPL' 'FDL' 'custom')
+url="http://gcc.gnu.org"
+depends=(binutils libmpc cloog)
+options=('!emptydirs')
+source=(
+http://ftp.stlinux.com/pub/stlinux/2.4/updates/RPMS/sh4/stlinux24-sh4-cpp-$_stver.sh4.rpm
+http://ftp.stlinux.com/pub/stlinux/2.4/updates/RPMS/sh4/stlinux24-sh4-cpp-doc-$_stver.sh4.rpm
+http://ftp.stlinux.com/pub/stlinux/2.4/updates/RPMS/sh4/stlinux24-sh4-g++-$_stver.sh4.rpm
+http://ftp.stlinux.com/pub/stlinux/2.4/updates/RPMS/sh4/stlinux24-sh4-gcc-$_stver.sh4.rpm
+http://ftp.stlinux.com/pub/stlinux/2.4/updates/RPMS/sh4/stlinux24-sh4-gcc-doc-$_stver.sh4.rpm
+http://ftp.stlinux.com/pub/stlinux/2.4/updates/RPMS/sh4/stlinux24-sh4-libgcc-$_stver.sh4.rpm
+http://ftp.stlinux.com/pub/stlinux/2.4/updates/RPMS/sh4/stlinux24-sh4-libstdc++-$_stver.sh4.rpm
+http://ftp.stlinux.com/pub/stlinux/2.4/updates/RPMS/sh4/stlinux24-sh4-libstdc++-dev-$_stver.sh4.rpm
+)
+
+package_sh4-gcc-libs() {
+  pkgdesc="Runtime libraries shipped by GCC(STLinux 2.4)"
+  groups=('base')
+  depends=('glibc>=2.10')
+  conflicts=gcc-libs
+  provides=("gcc-libs=$pkgver-$pkgrel")
+  install=gcc-libs.install
+  mkdir -p $pkgdir/usr/lib
+  cp -r opt/STM/STLinux-2.4/devkit/sh4/target/lib/*so* $pkgdir/usr/lib
+  cp -r opt/STM/STLinux-2.4/devkit/sh4/target/usr $pkgdir
+  rm -rf $pkgdir/usr/{bin,libexec,share,lib/gcc,include}
+  install -d $pkgdir/usr/share/gdb/auto-load/usr/lib
+  mv $pkgdir{,/usr/share/gdb/auto-load}/usr/lib/libstdc++.so.6.0.18-gdb.py
+}
+package_sh4-gcc() {
+  pkgdesc="The GNU Compiler Collection - C and C++ frontends(STLinux 2.4)"
+  depends=("gcc-libs=$pkgver-$pkgrel" 'binutils' 'libmpc' 'cloog')
+  groups=('base-devel')
+  options=('staticlibs')
+  install=gcc.install
+  conflicts=gcc
+  provides=("gcc=$pkgver")
+  cp -r opt/STM/STLinux-2.4/devkit/sh4/target/usr $pkgdir
+  rm -f $pkgdir/usr/lib/* || true
+  rm -rf $pkgdir/usr/share/locale
+}
+md5sums=('3dcb44c79f9a4ca336ddd75ae6ef8884'
+         '7af70f1f2c536df975de821c38080713'
+         '7f5f5a878d3e8abb0532881969689983'
+         'f2029c169641fe2088a73e8125ad873f'
+         'c8ef015292e6e0921b6ae33213bd5264'
+         '3435e87ae5dfc6a658b53c7f5f2a172a'
+         '98dbd730e54ba3d37becf1a0751aa387'
+         '7b9f89c6ed324661e70e97ba315f32ef')

@@ -1,0 +1,16 @@
+# $Id: PKGBUILD 173025 2012-12-08 19:52:26Z dreisner $
+# Maintainer: Dave Reisner <dreisner@archlinux.org>
+
+pkgname=kmod
+pkgver=12
+pkgrel=1
+pkgdesc="dummy Linux kernel module handling"
+arch=(sh4)
+url='http://git.kernel.org/?p=utils/kernel/kmod/kmod.git;a=summary'
+license=('GPL2')
+depends=('glibc' 'zlib')
+makedepends=('gtk-doc')
+options=('!libtool')
+provides=('module-init-tools=3.16')
+conflicts=('module-init-tools')
+replaces=('module-init-tools')

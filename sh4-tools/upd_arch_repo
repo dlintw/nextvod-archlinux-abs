@@ -1,0 +1,35 @@
+#!/bin/bash
+# vim:et sw=2 ts=2 ai syntax=sh:
+[ $# -eq 0 ] && echo "Usage: `basename $0` <pkg_files>..." && exit 1
+set -e -u
+. $(dirname $(realpath $0))/env
+is_remote=0
+[ $(hostname) != $mirrorhost ] && is_remote=1
+go(){ echo "$@" ; "$@" ; }
+if [ $is_remote = 1 ] ; then
+  CPCMD="scp $scp_opt"
+  SHCMD="ssh $ssh_opt $repohost"
+  repoany="$repohost:$dirany"
+  repotest="$repohost:$dirtest"
+else
+  CPCMD="cp"
+  SHCMD=""
+  dirany=$HOME/$dirany
+  dirtest=$HOME/$dirtest
+  repoany="$dirany"
+  repotest="$dirtest"
+fi
+while [ -n "${1:-}" ] ; do
+  file=$1
+  case "$file" in
+  *-any.pkg.*)
+    go ${CPCMD} $file $repoany
+    go $SHCMD repo-add $dirany/archany.db.tar.xz $dirany/$file
+    ;;
+  *)
+    go ${CPCMD} $file $repotest
+    go $SHCMD repo-add $dirtest/archtest.db.tar.xz $dirtest/$file
+    ;;
+  esac
+  shift
+done

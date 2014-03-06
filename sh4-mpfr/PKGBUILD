@@ -1,0 +1,18 @@
+# Maintainer: Daniel YC Lin <dlin.tw at gmail>
+
+pkgname=sh4-mpfr
+pkgver=3.1.2
+pkgrel=9.1
+pkgdesc="STLinux Multiple-precision floating-point library"
+conflicts=mpfr
+provides=('mpfr=3.1.2')
+arch=(sh4)
+url="http://www.mpfr.org/"
+license=('LGPL')
+depends=('gmp>=5.0')
+install=mpfr.install
+source=(http://ftp.stlinux.com/pub/stlinux/2.4/updates/RPMS/sh4/stlinux24-sh4-mpfr-3.1.2-9.sh4.rpm)
+package() {
+  cp -r opt/STM/STLinux-2.4/devkit/sh4/target/usr $pkgdir
+}
+md5sums=('5a2da1003530cb75bdd4b6bd58580ce7')

@@ -1,0 +1,23 @@
+# Maintainer: Daniel YC Lin <dlin.tw at gmail>
+pkgname=sh4-binutils
+pkgver=2.23.2
+pkgrel=75.1
+pkgdesc="STLinux GNU C Library"
+pkgdesc="A set of programs to assemble and manipulate binary and object files"
+arch=(sh4)
+url="http://www.gnu.org/software/binutils/"
+license=('GPL')
+groups=('base-devel')
+depends=('glibc' 'zlib')
+provides=('binutils=2.23.2')
+conflicts=('binutils')
+options=('staticlibs' '!distcc' '!ccache')
+install=binutils.install
+source=(http://ftp.stlinux.com/pub/stlinux/2.4/updates/RPMS/sh4/stlinux24-sh4-binutils-2.23.2-75.sh4.rpm
+http://ftp.stlinux.com/pub/stlinux/2.4/updates/RPMS/sh4/stlinux24-sh4-binutils-dev-2.23.2-75.sh4.rpm)
+
+package() {
+  cp -r opt/STM/STLinux-2.4/devkit/sh4/target/* $pkgdir
+}
+md5sums=('4faff5bb869dcc7dcb56fd278d83aac7'
+         '789809ac9575bed4dbb68acdf19fe022')

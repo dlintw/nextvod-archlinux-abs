@@ -1,0 +1,10 @@
+--- old/php-5.5.1/ext/standard/filters.c	2013-07-19 15:13:39.728786412 +0800
++++ new/php-5.5.1/ext/standard/filters.c	2013-07-19 15:14:03.382988000 +0800
+@@ -1185,7 +1185,6 @@
+ }
+ static php_conv_err_t php_conv_qprint_decode_ctor(php_conv_qprint_decode *inst, const char *lbchars, size_t lbchars_len, int lbchars_dup, int persistent)
+ {
+-	inst->_super.convert_op = (php_conv_convert_func) php_conv_qprint_decode_convert;
+ 	inst->_super.dtor = (php_conv_dtor_func) php_conv_qprint_decode_dtor;
+ 	inst->scan_stat = 0;
+ 	inst->next_char = 0;

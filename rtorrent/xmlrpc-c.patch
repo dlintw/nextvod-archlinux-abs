@@ -1,0 +1,11 @@
+--- configure	2013-02-13 17:19:17.000000000 +0800
++++ configure.orig	2013-02-13 16:42:55.000000000 +0800
+@@ -17912,7 +17912,7 @@
+       fi
+ 
+       if eval $xmlrpc_cc_prg --version 2>/dev/null >/dev/null; then
+-        CXXFLAGS="$CXXFLAGS --shared `$xmlrpc_cc_prg --cflags server-util`"
++        CXXFLAGS="$CXXFLAGS `$xmlrpc_cc_prg --cflags server-util`"
+         LIBS="$LIBS `$xmlrpc_cc_prg server-util --libs`"
+ 
+         cat confdefs.h - <<_ACEOF >conftest.$ac_ext

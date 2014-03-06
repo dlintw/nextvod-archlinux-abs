@@ -1,0 +1,22 @@
+#!/bin/bash
+#
+# /etc/rc.local: Local multi-user start-up script.
+#
+
+# sample for dhcp
+ifconfig eth0 up
+busybox udhcpc > /var/log/udhcpc.log 2>&1 &
+
+# sample for static ip
+#ifconfig eth0 192.168.15.2 netmask 255.255.255.0 up
+#route add default gw 192.168.15.1
+
+# backup ip
+ifconfig eth0:1 192.168.168.168 netmask 255.255.255.0 
+
+# sync by busybox's ntp utility
+sleep 15 # wait dhcp get ip
+ntpd -dnqp  watch.stdtime.gov.tw > /var/log/ntpd.log 2>&1
+ntpd -dp watch.stdtime.gov.tw >> /var/log/ntpd.log 2>&1
+
+/etc/rc.d/sshd start

@@ -1,0 +1,13 @@
+# $Id: PKGBUILD 175870 2013-01-23 00:13:04Z eric $
+# Maintainer: Andreas Radke <andyrtr@archlinux.org>
+# Contributor: Art Gramlich <art@gramlich-net.com>
+
+pkgname=icu
+pkgver=50.1.2
+pkgrel=1
+pkgdesc="dummy International Components for Unicode library"
+arch=sh4
+url="http://www.icu-project.org/"
+license=('custom:"icu"')
+depends=('gcc-libs' 'sh')
+#makedepends=('clang')
